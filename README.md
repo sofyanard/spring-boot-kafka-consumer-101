@@ -42,6 +42,9 @@ Jalankan dari root repository:
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=consumer
 ```
+```
+java -jar spring-boot-kafka-consumer-101.jar --spring.profiles.active=consumer
+```
 
 Untuk Windows PowerShell, gunakan:
 
