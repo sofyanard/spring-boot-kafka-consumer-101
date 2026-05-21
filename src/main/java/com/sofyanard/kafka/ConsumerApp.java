@@ -14,12 +14,20 @@ public class ConsumerApp {
     public static void main(String[] args) {
         System.out.println("Hello World");
 
+        Properties appProps = new Properties();
+        try (var input = ConsumerApp.class.getClassLoader().getResourceAsStream("application.properties")) {
+            appProps.load(input);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.19.38.179:9092");
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "java");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, appProps.getProperty("kafka.bootstrap-servers"));
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, appProps.getProperty("kafka.auto-offset-reset"));
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, appProps.getProperty("kafka.key-deserializer"));
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                appProps.getProperty("kafka.value-deserializer"));
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, appProps.getProperty("kafka.group-id"));
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(List.of("thermostat_readings"));
